@@ -1,0 +1,36 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.oldplayer.music'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.oldplayer.music"
+        minSdk 19          // Android 4.4
+        targetSdk 19       // behave like a 4.4 app (no runtime permissions needed)
+        versionCode 2
+        versionName "1.1"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+// No third-party libraries on purpose: keeps the APK tiny and 4.4-safe.
+dependencies {
+}
