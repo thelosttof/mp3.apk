@@ -2,8 +2,15 @@
 <resources>
     <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_window</item>
-        <item name="android:colorBackground">#0F1115</item>
-        <item name="android:textColorPrimary">#F2F4F8</item>
-        <item name="android:textColorSecondary">#8A93A3</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="android:textColorPrimary">#F2F2F2</item>
+        <item name="android:textColorSecondary">#8F8F8F</item>
+        <item name="android:textColorHighlight">#55FFFFFF</item>
+        <item name="android:textSelectHandle">@drawable/select_handle</item>
+        <item name="android:textSelectHandleLeft">@drawable/select_handle</item>
+        <item name="android:textSelectHandleRight">@drawable/select_handle</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/scroll_thumb</item>
+        <item name="android:fastScrollTrackDrawable">@drawable/scroll_track</item>
+        <item name="android:actionModeBackground">@drawable/bg_chip</item>
     </style>
 </resources>

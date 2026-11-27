@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -114,16 +116,19 @@ public class ArtLoader {
         shader.setLocalMatrix(m);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setShader(shader);
+        ColorMatrix gray = new ColorMatrix();
+        gray.setSaturation(0f);
+        p.setColorFilter(new ColorMatrixColorFilter(gray));
         canvas.drawRoundRect(new RectF(0, 0, size, size), radius, radius, p);
         return out;
     }
 
-    /** Teal gradient with a music note, used when a song has no cover. */
+    /** Grey gradient with a music note, used when a song has no cover. */
     private static Bitmap placeholder(int s) {
         Bitmap b = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        p.setShader(new LinearGradient(0, 0, s, s, 0xFF2DD4BF, 0xFF16324A, Shader.TileMode.CLAMP));
+        p.setShader(new LinearGradient(0, 0, s, s, 0xFF4A4A4A, 0xFF0D0D0D, Shader.TileMode.CLAMP));
         c.drawRect(0, 0, s, s, p);
         p.setShader(null);
         p.setColor(0xD9FFFFFF);

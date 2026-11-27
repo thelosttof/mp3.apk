@@ -10,8 +10,8 @@ android {
         applicationId "com.oldplayer.music"
         minSdk 19          // Android 4.4
         targetSdk 19       // behave like a 4.4 app (no runtime permissions needed)
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
 
     buildTypes {

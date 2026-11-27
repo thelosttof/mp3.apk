@@ -16,7 +16,7 @@ public class IconView extends View {
             NOTE = 11, CLOCK = 12, DISC = 13, PERSON = 14, TREND = 15, STAR = 16, SEARCH = 17,
             HOME = 18, LIBRARY = 19, BACK = 20;
 
-    private static final int DARK = 0xFF0B1220;
+    private static final int DARK = 0xFF000000;
 
     private int icon = PLAY;
     private boolean circle;
@@ -48,6 +48,8 @@ public class IconView extends View {
         text.setTextAlign(Paint.Align.CENTER);
         text.setFakeBoldText(true);
         setClickable(true);
+        // shadow layers on shapes need software drawing on Android 4.4
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     public void setIcon(int icon) {
@@ -101,9 +103,23 @@ public class IconView extends View {
         stroke.setColor(fg);
         fill.setColor(fg);
 
+        // soft white glow, only on icons that are lit
+        if (fg == Color.WHITE) {
+            float r = s * 0.07f;
+            fill.setShadowLayer(r, 0, 0, 0xB3FFFFFF);
+            stroke.setShadowLayer(r, 0, 0, 0xB3FFFFFF);
+            text.setShadowLayer(r, 0, 0, 0xB3FFFFFF);
+        } else {
+            fill.clearShadowLayer();
+            stroke.clearShadowLayer();
+            text.clearShadowLayer();
+        }
+
         if (circle) {
-            fill.setColor(0x33FFFFFF);
+            fill.setColor(0x22FFFFFF);
+            fill.clearShadowLayer();
             canvas.drawCircle(cx, cy, s / 2f - 1f, fill);
+            if (fg == Color.WHITE) fill.setShadowLayer(s * 0.07f, 0, 0, 0xB3FFFFFF);
             fill.setColor(fg);
         }
 
@@ -112,10 +128,12 @@ public class IconView extends View {
         switch (icon) {
             case PLAY:
             case PAUSE: {
-                float half = s / 2f - s * 0.03f;
+                float half = s / 2f - s * 0.11f;
                 fill.setColor(isPressed() ? 0xCCFFFFFF : Color.WHITE);
+                fill.setShadowLayer(s * 0.10f, 0, 0, 0x99FFFFFF);
                 canvas.drawRoundRect(new RectF(cx - half, cy - half, cx + half, cy + half),
                         half * 0.5f, half * 0.5f, fill);
+                fill.clearShadowLayer();
                 fill.setColor(DARK);
                 if (icon == PAUSE) {
                     float bw = s * 0.085f, bh = s * 0.32f, gap = s * 0.075f;
@@ -182,7 +200,7 @@ public class IconView extends View {
                 path.cubicTo(cx + r * 0.9f, cy - r * 1.9f, cx + r * 2.3f, cy - r * 0.2f, cx, cy + r * 1.25f);
                 path.close();
                 if (filled) {
-                    fill.setColor(0xFFFF5C7A);
+                    fill.setColor(Color.WHITE);
                     canvas.drawPath(path, fill);
                 } else {
                     canvas.drawPath(path, stroke);

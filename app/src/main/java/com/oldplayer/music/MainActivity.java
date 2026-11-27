@@ -47,8 +47,8 @@ import java.util.Set;
 
 public class MainActivity extends Activity {
 
-    private static final int ACCENT = 0xFF2DD4BF;
-    private static final int NAV_OFF = 0xFF7C8598;
+    private static final int GLOW = 0x99FFFFFF;
+    private static final int NAV_OFF = 0xFF6E6E6E;
     private static final int ART_SIZE = 600;
     private static final int ART_RADIUS = 38;
 
@@ -64,15 +64,6 @@ public class MainActivity extends Activity {
     private static final int[] TILE_ICONS = {
             IconView.HEART, IconView.TREND, IconView.STAR, IconView.CLOCK,
             IconView.NOTE, IconView.DISC, IconView.PERSON, IconView.SHUFFLE};
-    private static final int[] TILE_ACCENT = {
-            0xFFFF5C7A, 0xFF2DD4BF, 0xFFFBBF24, 0xFF60A5FA,
-            0xFFA78BFA, 0xFFFB923C, 0xFF4ADE80, 0xFFF472B6};
-    private static final int[] TILE_BG1 = {
-            0xFF3D1C2C, 0xFF103B38, 0xFF3D3013, 0xFF1B2B4D,
-            0xFF2B2050, 0xFF3D2513, 0xFF123B24, 0xFF3D1A3A};
-    private static final int[] TILE_BG2 = {
-            0xFF1D1019, 0xFF0D1F22, 0xFF1D1810, 0xFF111A2D,
-            0xFF181230, 0xFF20150E, 0xFF0E2016, 0xFF1F0F20};
 
     /** An album or an artist with its songs. */
     private static class Group {
@@ -196,6 +187,7 @@ public class MainActivity extends Activity {
         btnShuffle.setActive(false);
         btnMoon.setIcon(IconView.MOON);
         btnMoon.setCircle(true);
+        btnMoon.setActive(false);
         btnMore.setIcon(IconView.MORE);
         btnMore.setCircle(true);
         btnRepeat.setIcon(IconView.REPEAT);
@@ -213,7 +205,14 @@ public class MainActivity extends Activity {
         navIcons[TAB_LIBRARY].setIcon(IconView.LIBRARY);
         for (IconView n : navIcons) n.setClickable(false);
 
-        applyTint(null);
+        applyBackground();
+        glow(greeting, true);
+        glow(listTitle, true);
+        glow(title, true);
+        glow(artist, true);
+        glow(timeNow, true);
+        glow(timeTotal, true);
+        glow(miniTitle, true);
         setupClicks();
 
         // library data
@@ -535,12 +534,7 @@ public class MainActivity extends Activity {
                 shownArtSongId = s.id;
                 art.setAlpha(0f);
                 anim(art).alpha(1f).setDuration(350).start();
-                ArtLoader.load(this, s.albumId, art, ART_SIZE, ART_RADIUS, new ArtLoader.Callback() {
-                    @Override
-                    public void onArt(Bitmap bitmap, boolean real) {
-                        applyTint(real ? bitmap : null);
-                    }
-                });
+                ArtLoader.load(this, s.albumId, art, ART_SIZE, ART_RADIUS, null);
             }
             boolean playing = svc.isPlaying();
             btnPlay.setIcon(playing ? IconView.PAUSE : IconView.PLAY);
@@ -562,7 +556,7 @@ public class MainActivity extends Activity {
         btnShuffle.setActive(svc.isShuffle());
         btnRepeat.setActive(svc.getRepeat() != PlayerService.REPEAT_OFF);
         btnRepeat.setRepeatOne(svc.getRepeat() == PlayerService.REPEAT_ONE);
-        btnMoon.setColorOverride(svc.getSleepMinutes() > 0 ? ACCENT : 0);
+        btnMoon.setActive(svc.getSleepMinutes() > 0);
         songAdapter.notifyDataSetChanged();
         groupAdapter.notifyDataSetChanged();
         refreshHome();
@@ -581,24 +575,15 @@ public class MainActivity extends Activity {
         }
     }
 
-    /** Colours the page background from the album cover (or a default navy). */
-    private void applyTint(Bitmap cover) {
-        int top = 0xFF18344D;
-        if (cover != null) {
-            try {
-                Bitmap mid = Bitmap.createBitmap(cover, cover.getWidth() / 4, cover.getHeight() / 4,
-                        cover.getWidth() / 2, cover.getHeight() / 2);
-                Bitmap px = Bitmap.createScaledBitmap(mid, 1, 1, true);
-                float[] hsv = new float[3];
-                Color.colorToHSV(px.getPixel(0, 0), hsv);
-                hsv[2] = Math.max(0.16f, Math.min(0.40f, hsv[2] * 0.55f));
-                top = Color.HSVToColor(hsv);
-            } catch (Exception ignored) {
-            }
-        }
-        GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{top, 0xFF080B12});
-        root.setBackground(bg);
+    /** Black and white page background. */
+    private void applyBackground() {
+        root.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0xFF1A1A1A, 0xFF000000}));
+    }
+
+    /** Soft white halo around a text, or removes it. */
+    private void glow(TextView t, boolean on) {
+        t.setShadowLayer(on ? dp(6) : 0, 0, 0, on ? GLOW : 0);
     }
 
     private void showLibrary(boolean show, boolean animate) {
@@ -661,9 +646,10 @@ public class MainActivity extends Activity {
 
     private void updateNav() {
         for (int i = 0; i < 3; i++) {
-            int c = i == tab ? ACCENT : NAV_OFF;
+            int c = i == tab ? Color.WHITE : NAV_OFF;
             navIcons[i].setColorOverride(c);
             navLabels[i].setTextColor(c);
+            glow(navLabels[i], i == tab);
         }
     }
 
@@ -704,7 +690,7 @@ public class MainActivity extends Activity {
 
     private void styleChip(TextView c, boolean on) {
         c.setBackgroundResource(on ? R.drawable.bg_chip_on : R.drawable.bg_chip);
-        c.setTextColor(on ? 0xFF0B1220 : 0xFFC9D1DE);
+        c.setTextColor(on ? Color.BLACK : 0xFFCFCFCF);
     }
 
     private void setGroupMode(boolean on) {
@@ -897,14 +883,14 @@ public class MainActivity extends Activity {
     private View makeTile(final int kind) {
         FrameLayout f = new FrameLayout(this);
         GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
-                new int[]{TILE_BG1[kind], TILE_BG2[kind]});
+                new int[]{0xFF222222, 0xFF0A0A0A});
         bg.setCornerRadius(dp(22));
+        bg.setStroke(dp(1), 0x40FFFFFF);
         f.setBackground(bg);
 
         IconView ic = new IconView(this);
         ic.setIcon(TILE_ICONS[kind]);
         ic.setCircle(true);
-        ic.setColorOverride(TILE_ACCENT[kind]);
         ic.setClickable(false);
         FrameLayout.LayoutParams ilp = new FrameLayout.LayoutParams(dp(58), dp(58));
         ilp.gravity = Gravity.TOP | Gravity.LEFT;
@@ -916,6 +902,7 @@ public class MainActivity extends Activity {
         TextView name = new TextView(this);
         name.setText(TILE_NAMES[kind]);
         name.setTextColor(Color.WHITE);
+        glow(name, true);
         name.setTextSize(16);
         name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
         name.setSingleLine(true);
@@ -1054,7 +1041,10 @@ public class MainActivity extends Activity {
             a.setText(sub);
             d.setText(Song.fmt(s.duration));
             Song cur = svc == null ? null : svc.current();
-            t.setTextColor(cur != null && cur.id == s.id ? ACCENT : 0xFFF2F4F8);
+            boolean playing = cur != null && cur.id == s.id;
+            t.setTextColor(playing ? Color.WHITE : 0xFFBDBDBD);
+            t.setTypeface(null, playing ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            glow(t, playing);
             ArtLoader.load(MainActivity.this, s.albumId, rowArt, (int) (100 * density / 2), (int) (10 * density / 2), null);
             return v;
         }
@@ -1088,7 +1078,9 @@ public class MainActivity extends Activity {
             TextView a = (TextView) v.findViewById(R.id.row_artist);
             TextView d = (TextView) v.findViewById(R.id.row_time);
             t.setText(g.name);
-            t.setTextColor(0xFFF2F4F8);
+            t.setTextColor(0xFFF2F2F2);
+            t.setTypeface(null, android.graphics.Typeface.NORMAL);
+            glow(t, false);
             String count = plural(g.songs.size(), "song");
             a.setText(g.sub.length() > 0 ? g.sub + " · " + count : count);
             d.setText("");

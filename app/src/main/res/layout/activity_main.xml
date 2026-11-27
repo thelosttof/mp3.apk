@@ -90,12 +90,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:maxHeight="3dp"
-            android:minHeight="3dp"
-            android:paddingBottom="14dp"
+            android:maxHeight="9dp"
+            android:minHeight="9dp"
+            android:paddingBottom="11dp"
             android:paddingLeft="26dp"
             android:paddingRight="26dp"
-            android:paddingTop="14dp"
+            android:paddingTop="11dp"
             android:progressDrawable="@drawable/seek_progress"
             android:thumb="@drawable/seek_thumb"
             android:thumbOffset="0dp" />
@@ -144,10 +144,10 @@
 
             <com.oldplayer.music.IconView
                 android:id="@+id/btn_play"
-                android:layout_width="78dp"
-                android:layout_height="78dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_width="86dp"
+                android:layout_height="86dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp" />
 
             <com.oldplayer.music.IconView
                 android:id="@+id/btn_next"
@@ -175,7 +175,7 @@
         android:id="@+id/library_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#0B0F18"
+        android:background="#050505"
         android:clickable="true"
         android:orientation="vertical">
 
@@ -184,11 +184,12 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <!-- Home: greeting + colourful tiles -->
+            <!-- Home: greeting + tiles -->
             <ScrollView
                 android:id="@+id/page_home"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:overScrollMode="never"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -217,7 +218,7 @@
                         android:layout_marginTop="2dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:textColor="#8A93A3"
+                        android:textColor="#8F8F8F"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -268,7 +269,7 @@
                         android:id="@+id/list_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#8A93A3"
+                        android:textColor="#8F8F8F"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -334,8 +335,9 @@
                     android:paddingLeft="18dp"
                     android:paddingRight="18dp"
                     android:singleLine="true"
-                    android:textColor="#F2F4F8"
-                    android:textColorHint="#6B7385"
+                    android:textColor="#F2F2F2"
+                    android:textColorHint="#777777"
+                    android:textCursorDrawable="@drawable/text_cursor"
                     android:textSize="15sp"
                     android:visibility="gone" />
 
@@ -353,7 +355,8 @@
                         android:divider="@null"
                         android:dividerHeight="0dp"
                         android:fastScrollEnabled="true"
-                        android:listSelector="#14FFFFFF" />
+                        android:listSelector="#22FFFFFF"
+                        android:overScrollMode="never" />
 
                     <TextView
                         android:id="@+id/empty"
@@ -362,7 +365,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:padding="32dp"
-                        android:textColor="#8A93A3"
+                        android:textColor="#8F8F8F"
                         android:textSize="15sp"
                         android:visibility="gone" />
                 </FrameLayout>
@@ -422,7 +425,7 @@
                         android:layout_marginTop="1dp"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:textColor="#8A93A3"
+                        android:textColor="#8F8F8F"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -445,7 +448,7 @@
                 android:layout_gravity="bottom|left"
                 android:layout_marginBottom="9dp"
                 android:layout_marginLeft="24dp"
-                android:background="#FF2DD4BF" />
+                android:background="#FFFFFFFF" />
         </FrameLayout>
 
         <!-- Bottom navigation -->
